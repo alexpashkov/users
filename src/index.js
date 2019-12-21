@@ -16,8 +16,7 @@ const bodyParser = require("body-parser");
     const client = await MongoClient.connect(
       `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${
         process.env.DB_URL
-      }`,
-      {}
+      }`
     );
     db = client.db(process.env.DB_NAME);
   } catch (err) {
