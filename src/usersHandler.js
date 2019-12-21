@@ -1,6 +1,7 @@
 const express = require("express");
 const usersInternal = require("./usersInternal");
 const validateUser = require("./validateUser");
+const BadRequestError = require("./BadRequestError");
 
 function createUserHandler(db, logger) {
   return async (req, res) => {
@@ -14,6 +15,11 @@ function createUserHandler(db, logger) {
       res.send();
     } catch (e) {
       logger.error(e);
+      if (e instanceof BadRequestError) {
+        res.status(400);
+        res.send(e.message);
+        return
+      }
       res.sendStatus(500);
     }
   };

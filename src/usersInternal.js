@@ -1,10 +1,19 @@
+const BadRequestError = require("./BadRequestError");
 const COLLECTION_NAME = "users";
-const _ = require("lodash");
+
+const DUPLICATE_KEY_CODE = 11000;
 
 async function create(db, user) {
   user._id = user.email;
   // for production we should encrypt user password here
-  return db.collection(COLLECTION_NAME).insertOne(user);
+  try {
+    await db.collection(COLLECTION_NAME).insertOne(user);
+  } catch (e) {
+    if (e.code === DUPLICATE_KEY_CODE) {
+      throw new BadRequestError("user with such email already exists");
+    }
+    throw e;
+  }
 }
 
 async function get(db, search) {
