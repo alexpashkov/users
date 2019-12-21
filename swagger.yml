@@ -22,6 +22,10 @@ paths:
       responses:
         200:
           description: OK
+        400:
+          description: BadRequest
+        500:
+          description: InternalServerError
     get:
       description: Get users that match search or all if no search was provided
       parameters:
@@ -32,17 +36,29 @@ paths:
       responses:
         200:
           description: OK
+        400:
+          description: BadRequest
+        500:
+          description: InternalServerError
   /users/{email}:
     put:
       description: Update a user by email
       responses:
         200:
           description: OK
+        400:
+          description: BadRequest
+        500:
+          description: InternalServerError
     delete:
       description: Delete a user by email
       responses:
         200:
           description: OK
+        400:
+          description: BadRequest
+        500:
+          description: InternalServerError
 definitions:
   User:
     type: object
