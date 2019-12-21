@@ -1,8 +1,14 @@
 const express = require("express");
 const usersInternal = require("./usersInternal");
+const validateUser = require("./validateUser");
 
 function createUserHandler(db, logger) {
   return async (req, res) => {
+    const err = validateUser(req.body);
+    if (err) {
+      res.status(400).send(err);
+      return;
+    }
     try {
       await usersInternal.create(db, req.body);
       res.send();
@@ -27,6 +33,11 @@ function getUsersHandler(db, logger) {
 
 function updateUserHandler(db, logger) {
   return async (req, res) => {
+    const err = validateUser(req.body);
+    if (err) {
+      res.status(400).send(err);
+      return;
+    }
     try {
       await usersInternal.update(db, req.params.email, req.body);
       res.send();

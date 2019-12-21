@@ -124,7 +124,7 @@ const cases = [
       firstName: "Alex",
       lastName: "Fooooo",
       password: "foobarA",
-      city: "Foooooooooooooooooooooo"
+      city: "Fooooooooooooooooooooo"
     },
     valid: true
   },
@@ -153,10 +153,13 @@ const cases = [
 
 describe("userSchema", () => {
   cases.forEach(({ description, user, valid }) =>
-    it(`throws an exception if user is invalid (${description})`, () => {
-      let test = expect(() => validateUser(user));
-      if (valid) test.not.toThrow();
-      else test.toThrow();
+    it(`returns validation error as a string if user is invalid (${description})`, () => {
+      const err = validateUser(user);
+      if (valid) expect(err).toBeFalsy();
+      else {
+        expect(typeof err).toBe("string");
+        expect(err.length).toBeGreaterThan(0);
+      }
     })
   );
 });

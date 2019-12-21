@@ -25,7 +25,9 @@ const bodyParser = require("body-parser");
 
   const app = express();
   app.use(bodyParser.json());
+  app.use((err, _, res, __) => res.status(400).send(err.message));
   app.use("/users", usersHandler(db));
+  app.use((err, _, res, __) => res.status(500).send(err.message));
 
   const PORT = process.env.PORT || 80;
   app.listen(PORT, () => console.log(`app is listening on port ${PORT}`));

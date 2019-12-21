@@ -22,7 +22,11 @@ const schema = Joi.object()
 
 function validateUser(user) {
   const { error } = schema.validate(user);
-  if (error) throw error;
+  return (
+    error &&
+    Array.isArray(error.details) &&
+    error.details.map(d => d.message).join(",")
+  );
 }
 
 module.exports = validateUser;

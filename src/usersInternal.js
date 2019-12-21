@@ -1,9 +1,7 @@
-const validateUser = require("./validateUser");
 const COLLECTION_NAME = "users";
 const _ = require("lodash");
 
 async function create(db, user) {
-  validateUser(user);
   user._id = user.email;
   return db.collection(COLLECTION_NAME).insertOne(user);
 }
@@ -26,7 +24,6 @@ function searchQuery(search) {
 }
 
 async function update(db, email, user) {
-  validateUser(user);
   return db.collection(COLLECTION_NAME).updateOne(
     {
       email
