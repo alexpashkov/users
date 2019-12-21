@@ -14,6 +14,8 @@ services:
       - 8080:80
     environment:
       PORT: 80
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      DB_URL: localhost:27017
+      DB_NAME: users
+      DB_USERNAME: root
+      DB_PASSWORD: example
     restart: always

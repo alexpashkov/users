@@ -1,19 +1,28 @@
 const express = require("express");
+const usersInternal = require("./usersInternal");
 
 function createUserHandler(db) {
-  return (req, res) => res.send("not implemented");
+  return (req, res) => {
+    usersInternal.create(db, req.body);
+  };
 }
 
 function getUsersHandler(db) {
-  return (req, res) => res.send("not implemented");
+  return (req, res) => {
+    usersInternal.get(db, req.query.search);
+  };
 }
 
 function updateUserHandler(db) {
-  return (req, res) => res.send("not implemented");
+  return (req, res) => {
+    usersInternal.update(db, req.params.email, req.body);
+  };
 }
 
 function deleteUserHandler(db) {
-  return (req, res) => res.send("not implemented");
+  return (req, res) => {
+    usersInternal.delete(db, req.params.email);
+  };
 }
 
 module.exports = function usersHandler(db) {
