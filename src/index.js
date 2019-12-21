@@ -2,8 +2,9 @@ const express = require("express");
 require("dotenv").config();
 const MongoClient = require("mongodb").MongoClient;
 const usersHandler = require("./usersHandler");
+const bodyParser = require("body-parser");
 
-(async function run() {
+(async function main() {
   if (!process.env.DB_URL) throw new Error("DB_URL is empty");
   if (!process.env.DB_NAME) throw new Error("DB_NAME is empty");
   if (!process.env.DB_USERNAME) throw new Error("DB_USERNAME is empty");
@@ -13,7 +14,9 @@ const usersHandler = require("./usersHandler");
   try {
     // Use connect method to connect to the Server
     const client = await MongoClient.connect(
-      `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_URL}`,
+      `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${
+        process.env.DB_URL
+      }`,
       {}
     );
     db = client.db(process.env.DB_NAME);
@@ -22,6 +25,7 @@ const usersHandler = require("./usersHandler");
   }
 
   const app = express();
+  app.use(bodyParser.json());
   app.use("/users", usersHandler(db));
 
   const PORT = process.env.PORT || 80;

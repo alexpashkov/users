@@ -1,35 +1,59 @@
 const express = require("express");
 const usersInternal = require("./usersInternal");
 
-function createUserHandler(db) {
-  return (req, res) => {
-    usersInternal.create(db, req.body);
+function createUserHandler(db, logger) {
+  return async (req, res) => {
+    try {
+      await usersInternal.create(db, req.body);
+      res.send();
+    } catch (e) {
+      logger.error(e);
+      res.sendStatus(500);
+    }
   };
 }
 
-function getUsersHandler(db) {
-  return (req, res) => {
-    usersInternal.get(db, req.query.search);
+function getUsersHandler(db, logger) {
+  return async (req, res) => {
+    try {
+      const users = await usersInternal.get(db, req.query.search);
+      res.send(users);
+    } catch (e) {
+      logger.error(e);
+      res.sendStatus(500);
+    }
   };
 }
 
-function updateUserHandler(db) {
-  return (req, res) => {
-    usersInternal.update(db, req.params.email, req.body);
+function updateUserHandler(db, logger) {
+  return async (req, res) => {
+    try {
+      await usersInternal.update(db, req.params.email, req.body);
+      res.send();
+    } catch (e) {
+      logger.error(e);
+      res.sendStatus(500);
+    }
   };
 }
 
-function deleteUserHandler(db) {
-  return (req, res) => {
-    usersInternal.delete(db, req.params.email);
+function deleteUserHandler(db, logger) {
+  return async (req, res) => {
+    try {
+      await usersInternal.delete(db, req.params.email);
+      res.send();
+    } catch (e) {
+      logger.error(e);
+      res.sendStatus(500);
+    }
   };
 }
 
 module.exports = function usersHandler(db) {
   const router = express.Router();
-  router.post("/", createUserHandler(db));
-  router.get("/", getUsersHandler(db));
-  router.put("/:email", updateUserHandler(db));
-  router.delete("/:email", deleteUserHandler(db));
+  router.post("/", createUserHandler(db, console));
+  router.get("/", getUsersHandler(db, console));
+  router.put("/:email", updateUserHandler(db, console));
+  router.delete("/:email", deleteUserHandler(db, console));
   return router;
 };
