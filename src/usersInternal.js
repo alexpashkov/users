@@ -3,6 +3,7 @@ const _ = require("lodash");
 
 async function create(db, user) {
   user._id = user.email;
+  // for production we should encrypt user password here
   return db.collection(COLLECTION_NAME).insertOne(user);
 }
 
