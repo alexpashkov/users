@@ -6,5 +6,7 @@ RUN npm i
 
 COPY src ./src
 
+RUN npm t
+
 ENTRYPOINT ["npm", "start"]
 
