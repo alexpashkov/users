@@ -1,0 +1,72 @@
+swagger: "2.0"
+info:
+  title: User Service
+  version: "0.0.1"
+basePath: "/"
+consumes:
+  - application/json
+produces:
+  - application/json
+schemes:
+  - http
+paths:
+  /users:
+    post:
+      description: Create a user
+      parameters:
+        - name: user
+          in: body
+          schema:
+            $ref: "#/definitions/User"
+          required: true
+      responses:
+        200:
+          description: OK
+    get:
+      description: Get users that match search or all if no search was provided
+      parameters:
+        - name: search
+          in: query
+          type: string
+          description: Partial search on mail, name or city
+      responses:
+        200:
+          description: OK
+  /users/{email}:
+    put:
+      description: Update a user by email
+      responses:
+        200:
+          description: OK
+    delete:
+      description: Delete a user by email
+      responses:
+        200:
+          description: OK
+definitions:
+  User:
+    type: object
+    required:
+      - email
+      - password
+      - firstName
+      - lastName
+      - city
+    properties:
+      email:
+        type: string
+        format: email
+      password:
+        type: string
+        minLength: 8
+        maxLength: 8
+        format: password
+      firstName:
+        type: string
+        maxLength: 25
+      lastName:
+        type: string
+        maxLength: 25
+      city:
+        type: string
+        maxLength: 25
