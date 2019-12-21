@@ -6,5 +6,5 @@ RUN npm i
 
 COPY src ./src
 
-ENTRYPOINT ["node", "src/index.js"]
+ENTRYPOINT ["npm", "start"]
 
