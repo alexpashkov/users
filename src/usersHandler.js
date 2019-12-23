@@ -32,13 +32,21 @@ function getUsersHandler(db) {
 
 function updateUserHandler(db) {
   return async (req, res) => {
-    const err = validateUser(req.body);
-    if (err) {
-      res.status(400).send(err);
-      return;
+    try {
+      const err = validateUser(req.body);
+      if (err) {
+        res.status(400).send(err);
+        return;
+      }
+      await usersInternal.update(db, req.params.email, req.body);
+      res.send();
+    } catch (e) {
+      if (e instanceof BadRequestError) {
+        res.status(400).send(e.message);
+        return;
+      }
+      throw e; // handle the error further down
     }
-    await usersInternal.update(db, req.params.email, req.body);
-    res.send();
   };
 }
 

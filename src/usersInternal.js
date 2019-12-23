@@ -34,12 +34,13 @@ function searchQuery(search) {
 }
 
 async function update(db, email, user) {
-  return db.collection(COLLECTION_NAME).updateOne(
+  const res = await db.collection(COLLECTION_NAME).updateOne(
     {
       email
     },
     { $set: user }
   );
+  if (!res.matchedCount) throw new BadRequestError("no such user");
 }
 
 async function deleteUser(db, email) {
