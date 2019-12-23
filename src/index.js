@@ -3,6 +3,7 @@ require("dotenv").config();
 const MongoClient = require("mongodb").MongoClient;
 const usersHandler = require("./usersHandler");
 const bodyParser = require("body-parser");
+const morgan = require("morgan");
 
 const REQUIRED_ENV_VARS = ["DB_URL", "DB_NAME", "DB_USERNAME", "DB_PASSWORD"];
 
@@ -23,7 +24,9 @@ const REQUIRED_ENV_VARS = ["DB_URL", "DB_NAME", "DB_USERNAME", "DB_PASSWORD"];
     throw new Error(`failed to connect to the db: ${err.message}`);
   }
 
+  // we may want to configure some default timeouts here
   const app = express();
+  app.use(morgan("combined"));
   app.use(bodyParser.json());
   // handle JSON parsing error
   app.use((err, _, res, __) => res.status(400).send(err.message));
