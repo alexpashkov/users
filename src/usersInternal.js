@@ -4,7 +4,6 @@ const COLLECTION_NAME = "users";
 const DUPLICATE_KEY_CODE = 11000;
 
 async function create(db, user) {
-  user._id = user.email;
   // for production we should encrypt user password here
   try {
     await db.collection(COLLECTION_NAME).insertOne(user);
@@ -17,6 +16,7 @@ async function create(db, user) {
 }
 
 async function get(db, search) {
+  // we may want to remove internal _id field here
   return db
     .collection(COLLECTION_NAME)
     .find(searchQuery(search))

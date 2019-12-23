@@ -18,6 +18,7 @@ const REQUIRED_ENV_VARS = ["DB_URL", "DB_NAME", "DB_USERNAME", "DB_PASSWORD"];
       `mongodb://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@${process.env.DB_URL}`
     );
     db = client.db(process.env.DB_NAME);
+    await db.collection("users").createIndex("email");
   } catch (err) {
     throw new Error(`failed to connect to the db: ${err.message}`);
   }
