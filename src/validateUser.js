@@ -9,7 +9,9 @@ const schema = Joi.object()
     password: Joi.string()
       .alphanum()
       .min(7)
-      .regex(/[A-Z]/)
+      .regex(/[A-Z]/, {
+        name: "capital letter"
+      })
       .required(),
     firstName: Joi.string()
       .max(25)
