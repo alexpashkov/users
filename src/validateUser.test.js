@@ -151,15 +151,17 @@ const cases = [
   }
 ];
 
-describe("userSchema", () => {
-  cases.forEach(({ description, user, valid }) =>
-    it(`returns validation error as a string if user is invalid (${description})`, () => {
-      const err = validateUser(user);
-      if (valid) expect(err).toBeFalsy();
-      else {
-        expect(typeof err).toBe("string");
-        expect(err.length).toBeGreaterThan(0);
-      }
-    })
-  );
+describe("validateUser", () => {
+  describe(`returns validation error as a string if user is invalid`, () => {
+    cases.forEach(({ description, user, valid }) =>
+      it(description, () => {
+        const err = validateUser(user);
+        if (valid) expect(err).toBeFalsy();
+        else {
+          expect(typeof err).toBe("string");
+          expect(err.length).toBeGreaterThan(0);
+        }
+      })
+    );
+  });
 });
