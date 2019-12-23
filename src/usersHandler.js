@@ -14,63 +14,61 @@ function createUserHandler(db, logger) {
       await usersInternal.create(db, req.body);
       res.send();
     } catch (e) {
-      logger.error(e);
       if (e instanceof BadRequestError) {
-        res.status(400);
-        res.send(e.message);
-        return
+        logger.error(`user creation failed: ${e.message}`);
+        res.status(400).send(e.message);
+        return;
       }
-      res.sendStatus(500);
+      throw e; // handle the error further down
     }
   };
 }
 
-function getUsersHandler(db, logger) {
+function getUsersHandler(db) {
   return async (req, res) => {
-    try {
-      const users = await usersInternal.get(db, req.query.search);
-      res.send(users);
-    } catch (e) {
-      logger.error(e);
-      res.sendStatus(500);
-    }
+    res.send(await usersInternal.get(db, req.query.search));
   };
 }
 
-function updateUserHandler(db, logger) {
+function updateUserHandler(db) {
   return async (req, res) => {
     const err = validateUser(req.body);
     if (err) {
       res.status(400).send(err);
       return;
     }
-    try {
-      await usersInternal.update(db, req.params.email, req.body);
-      res.send();
-    } catch (e) {
-      logger.error(e);
-      res.sendStatus(500);
-    }
+    await usersInternal.update(db, req.params.email, req.body);
+    res.send();
   };
 }
 
-function deleteUserHandler(db, logger) {
+function deleteUserHandler(db) {
   return async (req, res) => {
+    await usersInternal.delete(db, req.params.email);
+    res.send();
+  };
+}
+
+function asyncErrorHandler(handler) {
+  return async (req, res, next) => {
     try {
-      await usersInternal.delete(db, req.params.email);
-      res.send();
+      await handler(req, res);
     } catch (e) {
-      logger.error(e);
-      res.sendStatus(500);
+      next(e);
     }
   };
 }
 
-module.exports = function usersHandler(db) {
+module.exports = function usersHandler(db, logger) {
   const router = express.Router();
-  router.post("/", createUserHandler(db, console));
-  router.get("/", getUsersHandler(db, console));
-  router.put("/:email", updateUserHandler(db, console));
-  router.delete("/:email", deleteUserHandler(db, console));
+  router.post("/", asyncErrorHandler(createUserHandler(db, logger)));
+  router.get("/", asyncErrorHandler(getUsersHandler(db)));
+  router.put("/:email", asyncErrorHandler(updateUserHandler(db)));
+  router.delete("/:email", asyncErrorHandler(deleteUserHandler(db)));
+  router.use((err, req, res, _) => {
+    const errorMessage = err ? err.message : "unknown error";
+    logger.error(`request to ${req.originalUrl} failed: ${errorMessage}`);
+    res.sendStatus(500);
+  });
   return router;
 };
